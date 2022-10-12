@@ -37,6 +37,7 @@ export default class SchemaDescription {
   }
 
   addChildField({ keys }: { keys: string[] }): void {
+    console.log('addChildField', keys);
     let clonedSchema = _.clone(this.schema);
     const currentField = _.get(clonedSchema, keys);
     let fieldName = `field_${this.fieldNum++}`;
@@ -51,6 +52,7 @@ export default class SchemaDescription {
       );
     }
     this.schema = addRequiredFields(clonedSchema, keys, fieldName);
+    console.log('map应该带num:', this.schema);
   }
 
   deleteField({ keys }: { keys: string[] }): void {
@@ -60,6 +62,7 @@ export default class SchemaDescription {
   }
 
   addField({ keys, name }: { keys: string[]; name: string }): void {
+    console.log('addField');
     const clonedSchema = _.clone(this.schema);
     const propertiesData = _.get(this.schema, keys);
     let fieldName = `field_${this.fieldNum++}`;
@@ -84,19 +87,33 @@ export default class SchemaDescription {
   }
 
   changeType({ keys, value }: { keys: string[]; value: string }): void {
+    console.log('keys:', keys);
+    console.log('value:', value);
     const parentKeys: string[] = getParentKey(keys);
+    console.log('parentKeys:', parentKeys);
+    console.log('this.schema0:', this.schema);
     const parentData = parentKeys.length ? _.get(this.schema, parentKeys) : this.schema;
+    console.log('parentData:', parentData);
+    console.log('parentData.type:', parentData.type);
     if (parentData.type === value) {
       return;
     }
+    console.log('this.schema1:', this.schema);
     const clonedSchema = _.clone(this.schema);
+    console.log('clonedSchema:', clonedSchema);
     const description = parentData.description ? { description: parentData.description } : {};
+    console.log('description:', description);
     const newParentDataItem: Schema = { ...getDefaultSchema(value), ...description };
+    console.log('newParentDataItem:', newParentDataItem);
     if (parentKeys.length === 0) {
+      console.log('1')
       this.schema = { ...newParentDataItem };
     } else {
+      console.log('2')
       this.schema = _.set(clonedSchema, parentKeys, newParentDataItem);
+      console.log('this.schema2:', this.schema);
     }
+    console.log("end changeType...")
   }
 
   enableRequire({
@@ -181,6 +198,7 @@ export default class SchemaDescription {
   }
 
   setOpenValue({ key, value }: { key: string[]; value?: boolean }): void {
+    console.log('setOpenValue key:', key);
     const clonedState = _.clone(this.open);
     const keys = key.join(JSONPATH_JOIN_CHAR);
     const status = value === undefined ? !_.get(this.open, [keys]) : !!value;

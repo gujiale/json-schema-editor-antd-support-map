@@ -4,6 +4,7 @@ import { Schema, SchemaGenOptions, ValueType } from './types';
 
 // eslint-disable-next-line
 function createSchemaFor(value: any, options?: SchemaGenOptions): Schema {
+  console.log('value', value);
   switch (typeof value) {
     case 'number':
       if (Number.isInteger(value)) {
@@ -21,6 +22,9 @@ function createSchemaFor(value: any, options?: SchemaGenOptions): Schema {
       if (Array.isArray(value)) {
         return createSchemaForArray(value, options);
       }
+      if (value === 'map') {
+        return createSchemaForMap(value, options);
+      }
       return createSchemaForObject(value, options);
     default:
       throw new Error('unknown type');
@@ -29,12 +33,24 @@ function createSchemaFor(value: any, options?: SchemaGenOptions): Schema {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createSchemaForArray(arr: Array<any>, options?: SchemaGenOptions): Schema {
+  console.log('createSchemaForArray');
   if (arr.length === 0) {
     return { type: ValueType.Array };
   }
   const elementSchemas = arr.map((value) => createSchemaFor(value, options));
   const items = combineSchemas(elementSchemas);
   return { type: ValueType.Array, items };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createSchemaForMap(arr: Array<any>, options?: SchemaGenOptions): Schema {
+  console.log('createSchemaForMap');
+  if (arr.length === 0) {
+    return { type: ValueType.Map };
+  }
+  const elementSchemas = arr.map((value) => createSchemaFor(value, options));
+  const items = combineSchemas(elementSchemas);
+  return { type: ValueType.Map, items };
 }
 
 function createSchemaForObject(obj: unknown, options?: SchemaGenOptions): Schema {
@@ -57,6 +73,7 @@ function createSchemaForObject(obj: unknown, options?: SchemaGenOptions): Schema
 }
 
 function combineSchemas(schemas: Schema[], options?: SchemaGenOptions): Schema {
+  console.log('combineSchemas');
   const schemasByType: Record<ValueType, Schema[]> = {
     [ValueType.Null]: [],
     [ValueType.Boolean]: [],
@@ -65,6 +82,7 @@ function combineSchemas(schemas: Schema[], options?: SchemaGenOptions): Schema {
     [ValueType.String]: [],
     [ValueType.Array]: [],
     [ValueType.Object]: [],
+    [ValueType.Map]: [],
   };
 
   const unwrappedSchemas = unwrapSchemas(schemas);
@@ -84,6 +102,7 @@ function combineSchemas(schemas: Schema[], options?: SchemaGenOptions): Schema {
     [ValueType.String]: schemasByType[ValueType.String][0],
     [ValueType.Array]: combineArraySchemas(schemasByType[ValueType.Array]),
     [ValueType.Object]: combineObjectSchemas(schemasByType[ValueType.Object], options),
+    [ValueType.Map]: combineMapSchemas(schemasByType[ValueType.Map]),
   };
 
   if (resultSchemasByType[ValueType.Number]) {
@@ -100,6 +119,7 @@ function combineSchemas(schemas: Schema[], options?: SchemaGenOptions): Schema {
 }
 
 function combineArraySchemas(schemas: Schema[]): Schema {
+  console.log(schemas, ':schemas');
   if (!schemas || schemas.length === 0) {
     return undefined;
   }
@@ -122,7 +142,31 @@ function combineArraySchemas(schemas: Schema[]): Schema {
   };
 }
 
+function combineMapSchemas(schemas: Schema[]): Schema {
+  console.log(schemas, ':schemas');
+  if (!schemas || schemas.length === 0) {
+    return undefined;
+  }
+  const itemSchemas: Schema[] = [];
+  for (const schema of schemas) {
+    if (!schema.items) continue;
+    const unwrappedSchemas = unwrapSchema(schema.items);
+    itemSchemas.push(...unwrappedSchemas);
+  }
+  if (itemSchemas.length === 0) {
+    return {
+      type: ValueType.Map,
+    };
+  }
+  const items = combineSchemas(itemSchemas);
+  return {
+    type: ValueType.Map,
+    items,
+  };
+}
+
 function combineObjectSchemas(schemas: Schema[], options?: SchemaGenOptions): Schema {
+  console.log('combineObjectSchemas');
   if (!schemas || schemas.length === 0) {
     return undefined;
   }
@@ -167,6 +211,7 @@ function combineObjectSchemas(schemas: Schema[], options?: SchemaGenOptions): Sc
 }
 
 export function unwrapSchema(schema: Schema): Schema[] {
+  console.log('unwrapSchema');
   if (!schema) return [];
   if (schema.anyOf) {
     return unwrapSchemas(schema.anyOf);
@@ -178,15 +223,18 @@ export function unwrapSchema(schema: Schema): Schema[] {
 }
 
 export function unwrapSchemas(schemas: Schema[]): Schema[] {
+  console.log('unwrapSchemas');
   if (!schemas || schemas.length === 0) return [];
   return schemas.flatMap((schema) => unwrapSchema(schema));
 }
 
 export function wrapAnyOfSchema(schema: Schema): Schema {
+  console.log('wrapAnyOfSchema');
   const simpleSchemas = [];
   const complexSchemas = [];
   for (const subSchema of schema.anyOf) {
     if (Array.isArray(subSchema.type)) {
+      console.log('subSchema.type:', subSchema.type);
       simpleSchemas.push(...subSchema.type);
     } else if (isSimpleSchema(subSchema)) {
       simpleSchemas.push((subSchema as Schema).type);
@@ -206,6 +254,7 @@ export function wrapAnyOfSchema(schema: Schema): Schema {
 }
 
 function intersection(valuesArr: string[][]) {
+  console.log('intersection');
   if (valuesArr.length === 0) return [];
   const arrays = valuesArr.filter(Array.isArray);
   const counter: Record<string, number> = {};
@@ -224,24 +273,28 @@ function intersection(valuesArr: string[][]) {
 }
 
 function isSimpleSchema(schema: Schema): boolean {
+  console.log('isSimpleSchema');
   const keys = Object.keys(schema);
   return keys.length === 1 && keys[0] === 'type';
 }
 
 function isContainerSchema(schema: Schema): boolean {
+  console.log('isContainerSchema');
   const type = (schema as Schema).type;
-  return type === ValueType.Array || type === ValueType.Object;
+  return type === ValueType.Array || type === ValueType.Object || type === ValueType.Map;
 }
 
 // FACADE
 
 export function createSchema(value: unknown, options?: SchemaGenOptions): Schema {
+  console.log('createSchema');
   if (typeof value === 'undefined') value = null;
   const clone = JSON.parse(JSON.stringify(value));
   return createSchemaFor(clone, options);
 }
 
 export function mergeSchemas(schemas: Schema[], options?: SchemaGenOptions): Schema {
+  console.log('mergeSchemas');
   return combineSchemas(schemas, options);
 }
 

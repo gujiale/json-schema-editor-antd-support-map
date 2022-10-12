@@ -7,6 +7,7 @@ export enum ValueType {
   String = 'string',
   Object = 'object',
   Array = 'array',
+  Map = 'Map',
 }
 
 export type Schema = {

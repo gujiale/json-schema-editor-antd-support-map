@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import JsonSchemaEditor from '@quiet-front-end/json-schema-editor-antd';
+import JsonSchemaEditor from '@quiet-front-end/json-schema-editor-antd-support-map';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types,no-console */
 // noinspection NpmUsedModulesInstalled
@@ -12,7 +12,6 @@ export default () => {
   return (
     <div style={{ width: '90%' }}>
       <JsonSchemaEditor
-        mock
         onChange={(value) => {
           setVal(value);
         }}

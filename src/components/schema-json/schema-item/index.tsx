@@ -45,6 +45,7 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
 
   useEffect(() => {
     const length = props.prefix.filter((name) => name !== 'properties').length;
+    console.log('item useEffect props.prefix:', props.prefix);
     setTagPaddingLeftStyle({
       paddingLeft: `${20 * (length + 1)}px`,
     });
@@ -85,6 +86,7 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
 
   // 修改数据类型
   const handleChangeType = (value) => {
+    console.log('schema-item修改数据类型');
     const keys = getPrefix().concat('type');
     mobxContext.changeType({ keys, value });
   };
@@ -109,9 +111,11 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
 
   //  增加子节点
   const handleAddField = (type: string) => {
+    console.log('item增加子节点:', type);
     if (type === 'object') {
       return;
     }
+    console.log('item prefix:', prefix);
     mobxContext.addField({ keys: prefix, name });
   };
 

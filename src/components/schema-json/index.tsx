@@ -4,6 +4,7 @@ import SchemaArray from './schema-array';
 import SchemaObject from './schema-object';
 import { SchemaMobxContext } from '../../index';
 import Schema from '../../types/Schema';
+import SchemaMap from './schema-map';
 
 export const mapping = (
   name: string[],
@@ -16,9 +17,12 @@ export const mapping = (
   ) => void,
   showAdv: (prefix: string[], property: Schema) => void
 ): ReactElement => {
+  // 原来array是在这里创建子节点的
   switch (data.type) {
     case 'array':
       return <SchemaArray prefix={name} data={data} showEdit={showEdit} showAdv={showAdv} />;
+    case 'map':
+      return <SchemaMap prefix={name} data={data} showEdit={showEdit} showAdv={showAdv} />;
     case 'object':
       const nameArray = [].concat(name, 'properties');
       return <SchemaObject prefix={nameArray} data={data} showEdit={showEdit} showAdv={showAdv} />;

@@ -112,6 +112,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
 
   // 修改数据类型
   const handleChangeType = (key: string, value: string) => {
+    console.log('editor修改数据类型');
     schemaMobx.changeType({ keys: [key], value });
   };
 
@@ -185,7 +186,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
     value: string | { mock: string },
     type?: string
   ) => {
-    if (type === 'object' || type === 'array') {
+    if (type === 'object' || type === 'array' || type === 'map') {
       return;
     }
     const descriptionKey = [].concat(prefix, name);
@@ -270,7 +271,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
       }}
     >
       <div className="json-schema-react-editor">
-        <Button type="primary" onClick={showModal}>
+        {/* <Button type="primary" onClick={showModal}>
           import_json
         </Button>
         <Modal
@@ -305,7 +306,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
               <QuietEditor height={300} language="json" onChange={handleImportJsonSchema} />
             </Tabs.TabPane>
           </Tabs>
-        </Modal>
+        </Modal> */}
 
         <Modal
           title={
@@ -393,7 +394,8 @@ const Editor = observer((props: EditorProp): ReactElement => {
                                 disabled={
                                   !(
                                     schemaMobx.schema.type === 'object' ||
-                                    schemaMobx.schema.type === 'array'
+                                    schemaMobx.schema.type === 'array' ||
+                                    schemaMobx.schema.type === 'map'
                                   )
                                 }
                                 onChange={(event) => changeCheckBox(event.target.checked)}

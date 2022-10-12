@@ -39,6 +39,7 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
 
   useEffect(() => {
     const length = props.prefix.filter((name) => name !== 'properties').length;
+    console.log('array useEffect props.prefix:', props.prefix);
     setTagPaddingLeftStyle({
       paddingLeft: `${20 * (length + 1)}px`,
     });
@@ -51,6 +52,7 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
   // 修改数据类型
   const handleChangeType = (value: string) => {
     const keys = getPrefix().concat('type');
+    console.log('schema-array修改数据类型', value, keys);
     mobxContext.changeType({ keys, value });
   };
 
@@ -74,7 +76,9 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
 
   // 增加子节点
   const handleAddChildField = () => {
+    console.log('array增加子节点');
     const keyArr = getPrefix().concat('properties');
+    console.log('array keyArr:', keyArr);
     mobxContext.addChildField({ keys: keyArr });
     mobxContext.setOpenValue({ key: keyArr, value: true });
   };

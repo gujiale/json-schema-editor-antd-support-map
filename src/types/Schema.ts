@@ -17,6 +17,7 @@ export default interface Schema {
   exclusiveMinimum?: boolean;
   exclusiveMaximum?: boolean;
   items?: Schema;
+  mapItems?: Schema[];
   minItems?: number;
   maxItems?: number;
   uniqueItems?: boolean;

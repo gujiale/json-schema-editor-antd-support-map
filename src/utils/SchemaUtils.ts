@@ -31,6 +31,27 @@ export function getDefaultSchema(type: string): Schema {
       return {
         type: 'integer',
       };
+    case 'map':
+      return {
+        type: 'map',
+        mapItems: [{ type: 'string' }, { type: 'string' }],
+      };
+    case 'int64':
+      return {
+        type: 'int64',
+      };
+    case 'string_32':
+      return {
+        type: 'string_32',
+      };
+    case 'double':
+      return {
+        type: 'double',
+      };
+    case 'int16':
+      return {
+        type: 'int16',
+      };
     default:
       throw new Error(`Unsupported type: ${type}`);
   }
@@ -68,6 +89,11 @@ export const handleSchema = (schema: Schema): Schema => {
       }
     });
   } else if (clonedSchema.type === 'array') {
+    if (!clonedSchema.items) {
+      clonedSchema.items = { type: 'string' };
+    }
+    clonedSchema.items = handleSchema(clonedSchema.items);
+  } else if (clonedSchema.type === 'map') {
     if (!clonedSchema.items) {
       clonedSchema.items = { type: 'string' };
     }
@@ -114,6 +140,11 @@ export const handleSchemaRequired = (schema: Schema, checked: boolean): Schema =
       newSchema.properties = handleObject(newSchema.properties, checked);
     }
   } else if (newSchema.type === 'array') {
+    if (newSchema.items) {
+      newSchema.items = handleSchemaRequired(newSchema.items, checked);
+    }
+  } else if (newSchema.type === 'map') {
+    console.log('newSchema.type == map', newSchema.items);
     if (newSchema.items) {
       newSchema.items = handleSchemaRequired(newSchema.items, checked);
     }

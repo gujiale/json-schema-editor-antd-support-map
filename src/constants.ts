@@ -60,4 +60,16 @@ export const MOCK_SOURCE = [
   { name: '协议', mock: '@protocol' },
 ];
 
-export const SCHEMA_TYPE = ['string', 'number', 'array', 'object', 'boolean', 'integer'];
+export const SCHEMA_TYPE = [
+  'string',
+  'number',
+  'array',
+  'object',
+  'boolean',
+  'integer',
+  'map',
+  'int64',
+  'string_32',
+  'double',
+  'int16',
+];
