@@ -30,7 +30,7 @@ interface SchemaMapProp {
 
 const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
   const { data, prefix, showAdv, showEdit } = props;
-  console.log('data:', data);
+  //console.log('data:', data);
   // noinspection DuplicatedCode
   const [tagPaddingLeftStyle, setTagPaddingLeftStyle] = useState<CSSProperties>({});
 
@@ -39,7 +39,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
 
   useEffect(() => {
     const length = props.prefix.filter((name) => name !== 'properties').length;
-    console.log('map useEffect props.prefix:', props.prefix);
+    //console.log('map useEffect props.prefix:', props.prefix);
     setTagPaddingLeftStyle({
       paddingLeft: `${20 * (length + 1)}px`,
     });
@@ -51,11 +51,11 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
 
   // 修改数据类型
   const handleChangeType = (num: string, value: string) => {
-    console.log('num:', num);
-    console.log('schema-map修改数据类型');
+    //console.log('num:', num);
+    //console.log('schema-map修改数据类型');
     const keys = getPrefix(num).concat('type');
-    console.log('keys:', keys);
-    console.log('value:', value);
+    //console.log('keys:', keys);
+    //console.log('value:', value);
     mobxContext.changeType({ keys, value });
   };
 
@@ -72,16 +72,16 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
     mobxContext.changeValue({ keys: key, value });
   };
 
-  const handleChangeTitle = (num, value) => {
-    const key = getPrefix(num).concat('title');
+  const handleChangeTypeName = (num, value) => {
+    const key = getPrefix(num).concat('typeName');
     mobxContext.changeValue({ keys: key, value });
   };
 
   // 增加子节点
   const handleAddChildField = (num) => {
-    console.log('map增加子节点');
+    //console.log('map增加子节点');
     const keyArr = getPrefix(num).concat('properties');
-    console.log('map key应该有num:', keyArr);
+    //console.log('map key应该有num:', keyArr);
     mobxContext.addChildField({ keys: keyArr });
     mobxContext.setOpenValue({ key: keyArr, value: true });
   };
@@ -93,7 +93,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
   };
 
   const handleShowEdit = (num: string, name: string, type?: string) => {
-    console.log('handleShowEdit:', data.mapItems);
+    //console.log('handleShowEdit:', data.mapItems);
     showEdit(getPrefix(num), name, data.mapItems[name], type);
   };
 
@@ -112,7 +112,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
         <Row gutter={11} justify="space-around" align="middle">
           <Col flex="auto">
             <Row gutter={11} justify="space-around" align="middle">
-              <Col span={8} style={tagPaddingLeftStyle}>
+              <Col span={7} style={tagPaddingLeftStyle}>
                 <Row justify="space-around" align="middle" className="field-name">
                   <Col flex="20px">
                     {mapItems[0].type === 'object' ? (
@@ -130,18 +130,19 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
                   </Col>
                   <Col flex="auto">
                     <Input
-                      addonAfter={<Checkbox style={{ paddingLeft: 0 }} disabled />}
+                      addonAfter={<Checkbox style={{ paddingLeft: 0 }} disabled checked />}
                       disabled
                       value="Key"
                     />
                   </Col>
                 </Row>
               </Col>
-              <Col span={context.mock ? 3 : 4}>
+              <Col span={context.mock ? 3 : 5}>
                 <Select
                   style={{ width: '100%' }}
                   onChange={handleChangeType.bind(this, '0')}
                   value={mapItems[0].type}
+                  disabled
                 >
                   {SCHEMA_TYPE.map((item, index) => {
                     return (
@@ -166,12 +167,12 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
                   addonAfter={
                     <EditOutlined
                       className="input_icon_editor"
-                      onClick={() => handleShowEdit('0', 'title')}
+                      onClick={() => handleShowEdit('0', 'typeName')}
                     />
                   }
-                  placeholder="title"
-                  value={mapItems[0].title}
-                  onChange={(event) => handleChangeTitle('0', event.target.value)}
+                  placeholder="typeName"
+                  value={mapItems[0].typeName}
+                  onChange={(event) => handleChangeTypeName('0', event.target.value)}
                 />
               </Col>
               <Col span={context.mock ? 5 : 6}>
@@ -191,7 +192,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
           </Col>
           <Col flex="66px">
             <Row gutter={8}>
-              <Col span={8}>
+              <Col span={8} style={{ display: 'none' }}>
                 <span className="adv-set" onClick={handleShowAdv.bind(this, '0')}>
                   <Tooltip placement="top" title="adv_setting">
                     <SettingOutlined />
@@ -201,7 +202,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
               <Col span={8}>
                 {mapItems[0].type === 'object' ? (
                   <span className="plus" onClick={handleAddChildField.bind(this, '0')}>
-                    <Tooltip placement="top" title="add_child_node">
+                    <Tooltip placement="top" title="添加子节点">
                       <PlusOutlined />
                     </Tooltip>
                   </span>
@@ -216,7 +217,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
         <Row gutter={11} justify="space-around" align="middle">
           <Col flex="auto">
             <Row gutter={11} justify="space-around" align="middle">
-              <Col span={8} style={tagPaddingLeftStyle}>
+              <Col span={7} style={tagPaddingLeftStyle}>
                 <Row justify="space-around" align="middle" className="field-name">
                   <Col flex="20px">
                     {mapItems[1].type === 'object' ? (
@@ -234,14 +235,14 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
                   </Col>
                   <Col flex="auto">
                     <Input
-                      addonAfter={<Checkbox style={{ paddingLeft: 0 }} disabled />}
+                      addonAfter={<Checkbox style={{ paddingLeft: 0 }} disabled checked />}
                       disabled
                       value="Value"
                     />
                   </Col>
                 </Row>
               </Col>
-              <Col span={context.mock ? 3 : 4}>
+              <Col span={context.mock ? 3 : 5}>
                 <Select
                   style={{ width: '100%' }}
                   onChange={handleChangeType.bind(this, '1')}
@@ -270,12 +271,12 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
                   addonAfter={
                     <EditOutlined
                       className="input_icon_editor"
-                      onClick={() => handleShowEdit('1', 'title')}
+                      onClick={() => handleShowEdit('1', 'typeName')}
                     />
                   }
-                  placeholder="title"
-                  value={mapItems[1].title}
-                  onChange={(event) => handleChangeTitle('1', event.target.value)}
+                  placeholder="typeName"
+                  value={mapItems[1].typeName}
+                  onChange={(event) => handleChangeTypeName('1', event.target.value)}
                 />
               </Col>
               <Col span={context.mock ? 5 : 6}>
@@ -295,7 +296,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
           </Col>
           <Col flex="66px">
             <Row gutter={8}>
-              <Col span={8}>
+              <Col span={8} style={{ display: 'none' }}>
                 <span className="adv-set" onClick={handleShowAdv.bind(this, '1')}>
                   <Tooltip placement="top" title="adv_setting">
                     <SettingOutlined />
@@ -305,7 +306,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
               <Col span={8}>
                 {mapItems[1].type === 'object' ? (
                   <span className="plus" onClick={handleAddChildField.bind(this, '1')}>
-                    <Tooltip placement="top" title="add_child_node">
+                    <Tooltip placement="top" title="添加子节点">
                       <PlusOutlined />
                     </Tooltip>
                   </span>

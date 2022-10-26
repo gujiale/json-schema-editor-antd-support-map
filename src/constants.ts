@@ -61,15 +61,16 @@ export const MOCK_SOURCE = [
 ];
 
 export const SCHEMA_TYPE = [
-  'string',
-  'number',
-  'array',
-  'object',
-  'boolean',
-  'integer',
-  'map',
-  'int64',
-  'string_32',
-  'double',
   'int16',
+  'int32',
+  'int64',
+  'double',
+  'uint32',
+  'uint64',
+  'list',
+  'string16',
+  'string32',
+  'object',
+  'bool',
+  'map',
 ];

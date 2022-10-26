@@ -39,20 +39,19 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
 
   useEffect(() => {
     const length = props.prefix.filter((name) => name !== 'properties').length;
-    console.log('array useEffect props.prefix:', props.prefix);
     setTagPaddingLeftStyle({
       paddingLeft: `${20 * (length + 1)}px`,
     });
   }, [props.prefix]);
 
   const getPrefix = () => {
+    // console.log('list:', prefix);
     return [].concat(prefix, 'items');
   };
 
   // 修改数据类型
   const handleChangeType = (value: string) => {
     const keys = getPrefix().concat('type');
-    console.log('schema-array修改数据类型', value, keys);
     mobxContext.changeType({ keys, value });
   };
 
@@ -69,16 +68,14 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
     mobxContext.changeValue({ keys: key, value });
   };
 
-  const handleChangeTitle = (value) => {
-    const key = getPrefix().concat('title');
+  const handleChangeTypeName = (value) => {
+    const key = getPrefix().concat('typeName');
     mobxContext.changeValue({ keys: key, value });
   };
 
   // 增加子节点
   const handleAddChildField = () => {
-    console.log('array增加子节点');
     const keyArr = getPrefix().concat('properties');
-    console.log('array keyArr:', keyArr);
     mobxContext.addChildField({ keys: keyArr });
     mobxContext.setOpenValue({ key: keyArr, value: true });
   };
@@ -107,7 +104,7 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
       <Row gutter={11} justify="space-around" align="middle">
         <Col flex="auto">
           <Row gutter={11} justify="space-around" align="middle">
-            <Col span={8} style={tagPaddingLeftStyle}>
+            <Col span={7} style={tagPaddingLeftStyle}>
               <Row justify="space-around" align="middle" className="field-name">
                 <Col flex="20px">
                   {items.type === 'object' ? (
@@ -122,14 +119,14 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
                 </Col>
                 <Col flex="auto">
                   <Input
-                    addonAfter={<Checkbox style={{ paddingLeft: 0 }} disabled />}
+                    addonAfter={<Checkbox style={{ paddingLeft: 0 }} disabled checked />}
                     disabled
                     value="Items"
                   />
                 </Col>
               </Row>
             </Col>
-            <Col span={context.mock ? 3 : 4}>
+            <Col span={context.mock ? 3 : 5}>
               <Select style={{ width: '100%' }} onChange={handleChangeType} value={items.type}>
                 {SCHEMA_TYPE.map((item, index) => {
                   return (
@@ -154,12 +151,12 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
                 addonAfter={
                   <EditOutlined
                     className="input_icon_editor"
-                    onClick={() => handleShowEdit('title')}
+                    onClick={() => handleShowEdit('typeName')}
                   />
                 }
-                placeholder="title"
-                value={items.title}
-                onChange={(event) => handleChangeTitle(event.target.value)}
+                placeholder="typeName"
+                value={items.typeName}
+                onChange={(event) => handleChangeTypeName(event.target.value)}
               />
             </Col>
             <Col span={context.mock ? 5 : 6}>
@@ -179,7 +176,7 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
         </Col>
         <Col flex="66px">
           <Row gutter={8}>
-            <Col span={8}>
+            <Col span={8} style={{ display: 'none' }}>
               <span className="adv-set" onClick={handleShowAdv}>
                 <Tooltip placement="top" title="adv_setting">
                   <SettingOutlined />
@@ -189,7 +186,7 @@ const SchemaArray = observer((props: SchemaArrayProp): ReactElement => {
             <Col span={8}>
               {items.type === 'object' ? (
                 <span className="plus" onClick={handleAddChildField}>
-                  <Tooltip placement="top" title="add_child_node">
+                  <Tooltip placement="top" title="添加子节点">
                     <PlusOutlined />
                   </Tooltip>
                 </span>

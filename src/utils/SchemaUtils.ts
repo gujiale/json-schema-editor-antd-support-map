@@ -3,19 +3,43 @@ import Schema from '../types/Schema';
 
 export function getDefaultSchema(type: string): Schema {
   switch (type) {
-    case 'string':
+    case 'uint32':
       return {
-        type: 'string',
+        type: 'uint32',
       };
-    case 'number':
+    case 'uint64':
       return {
-        type: 'number',
+        type: 'uint64',
       };
-    case 'array':
+    case 'int16':
       return {
-        type: 'array',
+        type: 'int16',
+      };
+    case 'int32':
+      return {
+        type: 'int32',
+      };
+    case 'int64':
+      return {
+        type: 'int64',
+      };
+    case 'string16':
+      return {
+        type: 'string16',
+      };
+    case 'string32':
+      return {
+        type: 'string32',
+      };
+    case 'double':
+      return {
+        type: 'double',
+      };
+    case 'list':
+      return {
+        type: 'list',
         items: {
-          type: 'string',
+          type: 'string16',
         },
       };
     case 'object':
@@ -23,34 +47,14 @@ export function getDefaultSchema(type: string): Schema {
         type: 'object',
         properties: {},
       };
-    case 'boolean':
+    case 'bool':
       return {
-        type: 'boolean',
-      };
-    case 'integer':
-      return {
-        type: 'integer',
+        type: 'bool',
       };
     case 'map':
       return {
         type: 'map',
-        mapItems: [{ type: 'string' }, { type: 'string' }],
-      };
-    case 'int64':
-      return {
-        type: 'int64',
-      };
-    case 'string_32':
-      return {
-        type: 'string_32',
-      };
-    case 'double':
-      return {
-        type: 'double',
-      };
-    case 'int16':
-      return {
-        type: 'int16',
+        mapItems: [{ type: 'string16' }, { type: 'string16' }],
       };
     default:
       throw new Error(`Unsupported type: ${type}`);
@@ -82,20 +86,15 @@ export const handleSchema = (schema: Schema): Schema => {
         clonedSchema.properties[key].type = 'object';
       }
       if (
-        clonedSchema.properties[key].type === 'array' ||
+        clonedSchema.properties[key].type === 'list' ||
         clonedSchema.properties[key].type === 'object'
       ) {
         clonedSchema.properties[key] = handleSchema(clonedSchema.properties[key]);
       }
     });
-  } else if (clonedSchema.type === 'array') {
+  } else if (clonedSchema.type === 'list') {
     if (!clonedSchema.items) {
-      clonedSchema.items = { type: 'string' };
-    }
-    clonedSchema.items = handleSchema(clonedSchema.items);
-  } else if (clonedSchema.type === 'map') {
-    if (!clonedSchema.items) {
-      clonedSchema.items = { type: 'string' };
+      clonedSchema.items = { type: 'string16' };
     }
     clonedSchema.items = handleSchema(clonedSchema.items);
   }
@@ -103,6 +102,7 @@ export const handleSchema = (schema: Schema): Schema => {
 };
 
 export const getParentKey = (keys: string[]): string[] => {
+  //console.log('getParentKey:', keys);
   if (!keys) {
     return [];
   }
@@ -139,12 +139,7 @@ export const handleSchemaRequired = (schema: Schema, checked: boolean): Schema =
     if (newSchema.properties) {
       newSchema.properties = handleObject(newSchema.properties, checked);
     }
-  } else if (newSchema.type === 'array') {
-    if (newSchema.items) {
-      newSchema.items = handleSchemaRequired(newSchema.items, checked);
-    }
-  } else if (newSchema.type === 'map') {
-    console.log('newSchema.type == map', newSchema.items);
+  } else if (newSchema.type === 'list') {
     if (newSchema.items) {
       newSchema.items = handleSchemaRequired(newSchema.items, checked);
     }
@@ -155,7 +150,7 @@ export const handleSchemaRequired = (schema: Schema, checked: boolean): Schema =
 function handleObject(properties: Record<string, Schema>, checked: boolean) {
   const clonedProperties = _.cloneDeep(properties);
   for (const key in clonedProperties) {
-    if (clonedProperties[key].type === 'array' || clonedProperties[key].type === 'object')
+    if (clonedProperties[key].type === 'list' || clonedProperties[key].type === 'object')
       clonedProperties[key] = handleSchemaRequired(clonedProperties[key], checked);
   }
   return clonedProperties;

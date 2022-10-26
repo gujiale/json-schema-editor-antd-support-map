@@ -3,7 +3,7 @@
  * @name JsonSchemaEditor
  * @description Json Schema 编辑器。
  * @author 物料作者
- * @package @quiet-front-end/json-schema-editor-antd
+ * @package @yy/json-schema-editor-antd
  */
 
 /**

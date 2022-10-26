@@ -45,7 +45,6 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
 
   useEffect(() => {
     const length = props.prefix.filter((name) => name !== 'properties').length;
-    console.log('item useEffect props.prefix:', props.prefix);
     setTagPaddingLeftStyle({
       paddingLeft: `${20 * (length + 1)}px`,
     });
@@ -79,14 +78,13 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
     mobxContext.changeValue({ keys: key, value });
   };
 
-  const handleChangeTitle = (value) => {
-    const key = getPrefix().concat('title');
+  const handleChangeTypeName = (value) => {
+    const key = getPrefix().concat('typeName');
     mobxContext.changeValue({ keys: key, value });
   };
 
   // 修改数据类型
   const handleChangeType = (value) => {
-    console.log('schema-item修改数据类型');
     const keys = getPrefix().concat('type');
     mobxContext.changeType({ keys, value });
   };
@@ -111,11 +109,9 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
 
   //  增加子节点
   const handleAddField = (type: string) => {
-    console.log('item增加子节点:', type);
     if (type === 'object') {
       return;
     }
-    console.log('item prefix:', prefix);
     mobxContext.addField({ keys: prefix, name });
   };
 
@@ -142,7 +138,7 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
       <Row justify="space-around" gutter={11} align="middle">
         <Col flex="auto">
           <Row justify="space-around" gutter={11} align="middle">
-            <Col span={8} style={tagPaddingLeftStyle}>
+            <Col span={7} style={tagPaddingLeftStyle}>
               <Row justify="space-around" align="middle" className="field-name">
                 <Col flex="20px">
                   {value.type === 'object' ? (
@@ -175,7 +171,7 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
               </Row>
             </Col>
 
-            <Col span={context.mock ? 3 : 4}>
+            <Col span={context.mock ? 3 : 5}>
               <Select style={{ width: '100%' }} onChange={handleChangeType} value={value.type}>
                 {SCHEMA_TYPE.map((item, index) => {
                   return (
@@ -202,12 +198,12 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
                 addonAfter={
                   <EditOutlined
                     className="input_icon_editor"
-                    onClick={() => handleShowEdit('title')}
+                    onClick={() => handleShowEdit('typeName')}
                   />
                 }
-                placeholder="title"
-                value={value.title}
-                onChange={(event) => handleChangeTitle(event.target.value)}
+                placeholder="typeName"
+                value={value.typeName}
+                onChange={(event) => handleChangeTypeName(event.target.value)}
               />
             </Col>
 
@@ -229,7 +225,7 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
 
         <Col flex="66px">
           <Row gutter={8}>
-            <Col span={8}>
+            <Col span={8} style={{ display: 'none' }}>
               <span className="adv-set" onClick={handleShowAdv}>
                 <Tooltip placement="top" title="adv_setting">
                   <SettingOutlined />
@@ -246,7 +242,7 @@ const SchemaItem = observer((props: SchemaItemProp): ReactElement => {
                 {value.type === 'object' ? (
                   <DropPlus prefix={prefix} name={name} />
                 ) : (
-                  <Tooltip placement="top" title="add_sibling_node">
+                  <Tooltip placement="top" title="添加兄弟节点">
                     <PlusOutlined />
                   </Tooltip>
                 )}

@@ -1,6 +1,5 @@
 import React, { ReactElement, ReactNode, useEffect, useRef, useState } from 'react';
 import { Input, InputRef, message } from 'antd';
-import _ from 'lodash';
 
 interface FieldInputProp {
   value: string;
@@ -40,15 +39,12 @@ const FieldInput = (props: FieldInputProp): ReactElement => {
   };
 
   useEffect(() => {
-    ref.current.input.addEventListener(
-      'blur',
-      _.debounce(() => {
-        if (ref.current.input.value.length === 0) {
-          message.warn('FieldName can not empty.').then();
-          ref.current.input.focus();
-        }
-      }, 50)
-    );
+    ref.current.input.addEventListener('blur', () => {
+      if (ref.current.input.value.length === 0) {
+        message.warn('FieldName can not empty.').then();
+        ref.current.input.focus();
+      }
+    });
   }, []);
 
   return (

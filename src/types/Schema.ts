@@ -1,5 +1,6 @@
 export default interface Schema {
   title?: string;
+  typeName?: string;
   type: string;
   properties?: Record<string, Schema>;
   required?: string[];

@@ -24,10 +24,10 @@ const DropPlus = observer((props: DropPlusProp): ReactElement => {
                 context.addField({ keys: prefix, name });
               }}
             >
-              sibling_node
+              添加兄弟节点
             </span>
           ),
-          key: 'sibling_node',
+          key: '添加兄弟节点',
         },
         {
           label: (
@@ -40,17 +40,17 @@ const DropPlus = observer((props: DropPlusProp): ReactElement => {
                 context.addChildField({ keys: prefix.concat(name, 'properties') });
               }}
             >
-              child_node
+              添加子节点
             </span>
           ),
-          key: 'child_node',
+          key: '添加子节点',
         },
       ]}
     />
   );
 
   return (
-    <Tooltip placement="top" title="add_node">
+    <Tooltip placement="top" title="添加节点">
       <Dropdown overlay={menu}>
         <PlusOutlined style={{ color: '#2395f1' }} />
       </Dropdown>

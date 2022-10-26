@@ -37,22 +37,20 @@ export default class SchemaDescription {
   }
 
   addChildField({ keys }: { keys: string[] }): void {
-    console.log('addChildField', keys);
     let clonedSchema = _.clone(this.schema);
     const currentField = _.get(clonedSchema, keys);
-    let fieldName = `field_${this.fieldNum++}`;
+    let fieldName = `field${this.fieldNum++}`;
     while (typeof currentField[fieldName] !== 'undefined') {
-      fieldName = `field_${this.fieldNum++}`;
+      fieldName = `field${this.fieldNum++}`;
     }
     if (currentField !== undefined) {
       clonedSchema = _.update(clonedSchema, keys, (n) =>
         _.assign(n, {
-          [fieldName]: getDefaultSchema('string'),
+          [fieldName]: getDefaultSchema('string16'),
         })
       );
     }
     this.schema = addRequiredFields(clonedSchema, keys, fieldName);
-    console.log('map应该带num:', this.schema);
   }
 
   deleteField({ keys }: { keys: string[] }): void {
@@ -62,24 +60,23 @@ export default class SchemaDescription {
   }
 
   addField({ keys, name }: { keys: string[]; name: string }): void {
-    console.log('addField');
     const clonedSchema = _.clone(this.schema);
     const propertiesData = _.get(this.schema, keys);
-    let fieldName = `field_${this.fieldNum++}`;
+    let fieldName = `field${this.fieldNum++}`;
     while (typeof propertiesData[fieldName] !== 'undefined') {
-      fieldName = `field_${this.fieldNum++}`;
+      fieldName = `field${this.fieldNum++}`;
     }
     let newPropertiesData: Record<string, Schema> = {};
     if (name) {
       for (const i in propertiesData) {
         newPropertiesData[i] = propertiesData[i];
         if (i === name) {
-          newPropertiesData[fieldName] = getDefaultSchema('string');
+          newPropertiesData[fieldName] = getDefaultSchema('string16');
         }
       }
     } else {
       newPropertiesData = _.assign(propertiesData, {
-        [fieldName]: getDefaultSchema('string'),
+        [fieldName]: getDefaultSchema('string16'),
       });
     }
     const newSchema = _.update(clonedSchema, keys, (n) => _.assign(n, newPropertiesData));
@@ -87,33 +84,25 @@ export default class SchemaDescription {
   }
 
   changeType({ keys, value }: { keys: string[]; value: string }): void {
-    console.log('keys:', keys);
-    console.log('value:', value);
+    //console.log('changeType-keys:', keys);
+    //console.log('changeType-value:', value);
     const parentKeys: string[] = getParentKey(keys);
-    console.log('parentKeys:', parentKeys);
-    console.log('this.schema0:', this.schema);
     const parentData = parentKeys.length ? _.get(this.schema, parentKeys) : this.schema;
-    console.log('parentData:', parentData);
-    console.log('parentData.type:', parentData.type);
+    //console.log('changeType-parentData:', JSON.stringify(parentData));
     if (parentData.type === value) {
       return;
     }
-    console.log('this.schema1:', this.schema);
     const clonedSchema = _.clone(this.schema);
-    console.log('clonedSchema:', clonedSchema);
     const description = parentData.description ? { description: parentData.description } : {};
-    console.log('description:', description);
     const newParentDataItem: Schema = { ...getDefaultSchema(value), ...description };
-    console.log('newParentDataItem:', newParentDataItem);
     if (parentKeys.length === 0) {
-      console.log('1')
       this.schema = { ...newParentDataItem };
     } else {
-      console.log('2')
+      //console.log('changeType-parentKeys:', parentKeys);
       this.schema = _.set(clonedSchema, parentKeys, newParentDataItem);
-      console.log('this.schema2:', this.schema);
+      //console.log('this.schema:', JSON.stringify(this.schema));
+      //console.log('newParentDataItem:', JSON.stringify(newParentDataItem));
     }
-    console.log("end changeType...")
   }
 
   enableRequire({
@@ -198,7 +187,6 @@ export default class SchemaDescription {
   }
 
   setOpenValue({ key, value }: { key: string[]; value?: boolean }): void {
-    console.log('setOpenValue key:', key);
     const clonedState = _.clone(this.open);
     const keys = key.join(JSONPATH_JOIN_CHAR);
     const status = value === undefined ? !_.get(this.open, [keys]) : !!value;

@@ -33,13 +33,13 @@ const MockSelect = (props: MockSelectProp): ReactElement => {
         }
         open={open}
         onChange={props.onChange}
-        disabled={schema.type === 'object' || schema.type === 'array'}
+        disabled={schema.type === 'object' || schema.type === 'list'}
       >
         <Input
           style={{ width: '100%' }}
           placeholder="mock"
           className={
-            schema.type === 'object' || schema.type === 'array'
+            schema.type === 'object' || schema.type === 'list'
               ? 'input_icon_editor_disabled'
               : 'input_icon_editor'
           }
@@ -48,7 +48,7 @@ const MockSelect = (props: MockSelectProp): ReactElement => {
           addonAfter={
             <EditOutlined
               className={
-                schema.type === 'object' || schema.type === 'array'
+                schema.type === 'object' || schema.type === 'list'
                   ? 'input_icon_editor_disabled'
                   : 'input_icon_editor'
               }

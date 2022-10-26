@@ -47,7 +47,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
     advVisible: false,
     itemKey: [],
     curItemCustomValue: null,
-    checked: false,
+    checked: true,
     editorModalName: '', // 弹窗名称 description | mock
     mock: '',
   });
@@ -112,7 +112,6 @@ const Editor = observer((props: EditorProp): ReactElement => {
 
   // 修改数据类型
   const handleChangeType = (key: string, value: string) => {
-    console.log('editor修改数据类型');
     schemaMobx.changeType({ keys: [key], value });
   };
 
@@ -186,7 +185,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
     value: string | { mock: string },
     type?: string
   ) => {
-    if (type === 'object' || type === 'array' || type === 'map') {
+    if (type === 'object' || type === 'list') {
       return;
     }
     const descriptionKey = [].concat(prefix, name);
@@ -271,7 +270,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
       }}
     >
       <div className="json-schema-react-editor">
-        {/* <Button type="primary" onClick={showModal}>
+        <Button type="primary" onClick={showModal} style={{ display:'none' }}>
           import_json
         </Button>
         <Modal
@@ -306,7 +305,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
               <QuietEditor height={300} language="json" onChange={handleImportJsonSchema} />
             </Tabs.TabPane>
           </Tabs>
-        </Modal> */}
+        </Modal>
 
         <Modal
           title={
@@ -373,7 +372,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
             <Row align="middle" gutter={11}>
               <Col flex="auto">
                 <Row align="middle" gutter={11}>
-                  <Col span={8}>
+                  <Col span={7}>
                     <Row justify="space-around" align="middle" className="field-name">
                       <Col flex="20px">
                         {schemaMobx.schema.type === 'object' ? (
@@ -394,8 +393,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
                                 disabled={
                                   !(
                                     schemaMobx.schema.type === 'object' ||
-                                    schemaMobx.schema.type === 'array' ||
-                                    schemaMobx.schema.type === 'map'
+                                    schemaMobx.schema.type === 'list'
                                   )
                                 }
                                 onChange={(event) => changeCheckBox(event.target.checked)}
@@ -406,7 +404,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
                       </Col>
                     </Row>
                   </Col>
-                  <Col span={props.mock ? 3 : 4}>
+                  <Col style={{ width: '100%' }} span={props.mock ? 3 : 5}>
                     <Select
                       style={{ width: '100%' }}
                       onChange={(value) => handleChangeType(`type`, value)}
@@ -432,13 +430,13 @@ const Editor = observer((props: EditorProp): ReactElement => {
                   )}
                   <Col span={props.mock ? 5 : 6}>
                     <Input
-                      placeholder="title"
-                      value={schemaMobx.schema.title}
-                      onChange={(ele) => handleChangeValue(['title'], ele.target.value)}
+                      placeholder="typeName"
+                      value={schemaMobx.schema.typeName}
+                      onChange={(ele) => handleChangeValue(['typeName'], ele.target.value)}
                       addonAfter={
                         <EditOutlined
                           className="input_icon_editor"
-                          onClick={() => showEdit([], 'title', schemaMobx.schema.title)}
+                          onClick={() => showEdit([], 'typeName', schemaMobx.schema.typeName)}
                         />
                       }
                     />
@@ -459,7 +457,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
               </Col>
               <Col flex="66px">
                 <Row gutter={8}>
-                  <Col span={8}>
+                  <Col span={8} style={{ display: 'none' }}>
                     <span className="adv-set" onClick={() => showAdv([], schemaMobx.schema)}>
                       <Tooltip placement="top" title="adv_setting">
                         <SettingOutlined />
@@ -469,7 +467,7 @@ const Editor = observer((props: EditorProp): ReactElement => {
                   <Col span={8}>
                     {schemaMobx.schema.type === 'object' ? (
                       <span className="plus" onClick={() => handleAddChildField('properties')}>
-                        <Tooltip placement="top" title="add_child_node">
+                        <Tooltip placement="top" title="添加子节点">
                           <PlusOutlined />
                         </Tooltip>
                       </span>
