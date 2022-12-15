@@ -74,3 +74,15 @@ export const SCHEMA_TYPE = [
   'bool',
   'map',
 ];
+
+// map的key下拉列表，只有基础类型，没有复杂的类型，不然会有问题
+export const MAP_SCHEMA_TYPE = [
+  'int16',
+  'int32',
+  'int64',
+  'double',
+  'uint32',
+  'uint64',
+  'string16',
+  'string32',
+];

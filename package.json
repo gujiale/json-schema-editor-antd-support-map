@@ -1,6 +1,6 @@
 {
   "name": "@yy/json-schema-editor-antd",
-  "version": "0.1.27",
+  "version": "0.1.28",
   "description": "Json Schema 编辑器",
   "main": "./lib/index.js",
   "module": "./es/index.js",

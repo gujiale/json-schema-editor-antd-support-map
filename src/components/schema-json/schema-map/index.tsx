@@ -11,7 +11,7 @@ import { Checkbox, Col, Input, Row, Select, Tooltip } from 'antd';
 import { observer } from 'mobx-react';
 import { SchemaMobxContext } from '../../..';
 import { EditorContext } from '../../editor';
-import { JSONPATH_JOIN_CHAR, SCHEMA_TYPE } from '../../../constants';
+import { JSONPATH_JOIN_CHAR, SCHEMA_TYPE, MAP_SCHEMA_TYPE } from '../../../constants';
 import MockSelect from '../../mock-select';
 import { mapping } from '../index';
 import Schema from '../../../types/Schema';
@@ -30,7 +30,7 @@ interface SchemaMapProp {
 
 const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
   const { data, prefix, showAdv, showEdit } = props;
-  //console.log('data:', data);
+  // console.log('data:', data);
   // noinspection DuplicatedCode
   const [tagPaddingLeftStyle, setTagPaddingLeftStyle] = useState<CSSProperties>({});
 
@@ -39,7 +39,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
 
   useEffect(() => {
     const length = props.prefix.filter((name) => name !== 'properties').length;
-    //console.log('map useEffect props.prefix:', props.prefix);
+    // console.log('map useEffect props.prefix:', props.prefix);
     setTagPaddingLeftStyle({
       paddingLeft: `${20 * (length + 1)}px`,
     });
@@ -51,11 +51,11 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
 
   // 修改数据类型
   const handleChangeType = (num: string, value: string) => {
-    //console.log('num:', num);
-    //console.log('schema-map修改数据类型');
+    // console.log('num:', num);
+    // console.log('schema-map修改数据类型');
     const keys = getPrefix(num).concat('type');
-    //console.log('keys:', keys);
-    //console.log('value:', value);
+    // console.log('keys:', keys);
+    // console.log('value:', value);
     mobxContext.changeType({ keys, value });
   };
 
@@ -79,9 +79,9 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
 
   // 增加子节点
   const handleAddChildField = (num) => {
-    //console.log('map增加子节点');
+    // console.log('map增加子节点');
     const keyArr = getPrefix(num).concat('properties');
-    //console.log('map key应该有num:', keyArr);
+    // console.log('map key应该有num:', keyArr);
     mobxContext.addChildField({ keys: keyArr });
     mobxContext.setOpenValue({ key: keyArr, value: true });
   };
@@ -93,7 +93,7 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
   };
 
   const handleShowEdit = (num: string, name: string, type?: string) => {
-    //console.log('handleShowEdit:', data.mapItems);
+    // console.log('handleShowEdit:', data.mapItems);
     showEdit(getPrefix(num), name, data.mapItems[name], type);
   };
 
@@ -142,9 +142,8 @@ const SchemaMap = observer((props: SchemaMapProp): ReactElement => {
                   style={{ width: '100%' }}
                   onChange={handleChangeType.bind(this, '0')}
                   value={mapItems[0].type}
-                  disabled
                 >
-                  {SCHEMA_TYPE.map((item, index) => {
+                  {MAP_SCHEMA_TYPE.map((item, index) => {
                     return (
                       <Select.Option value={item} key={index}>
                         {item}
